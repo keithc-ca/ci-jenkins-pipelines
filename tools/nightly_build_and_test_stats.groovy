@@ -105,7 +105,7 @@ node ("master") {
                   def build_time = LocalDateTime.ofInstant(Instant.ofEpochMilli(job.timestamp), ZoneId.of("UTC"))
                   def now = LocalDateTime.now(ZoneId.of("UTC"))
                   def days = ChronoUnit.DAYS.between(build_time, now)
-                  if (days < 7) { 
+                  if (days < 7) {
                     pipeline_id = job._id
                     pipelineUrl = job.buildUrl
                   }
@@ -136,7 +136,7 @@ node ("master") {
                 // Get all child Build jobs for this pipeline job
                 def pipelineBuildJobs = sh(returnStdout: true, script: "wget -q -O - ${trssUrl}/api/getChildBuilds?parentId=${pipeline_id}")
                 def pipelineBuildJobsJson = new JsonSlurper().parseText(pipelineBuildJobs)
-                buildJobNumber = 0 
+                buildJobNumber = 0
                 if (pipelineBuildJobsJson.size() > 0) {
                   pipelineBuildJobsJson.each { buildJob ->
                     if (buildJob.buildName.contains(buildVariant)) {
@@ -183,7 +183,7 @@ node ("master") {
       echo "    => Number of Build jobs = ${pipeline.buildJobNumber}"
       echo "    => Build job SUCCESS   = ${pipeline.buildJobSuccess}"
       echo "    => Build job FAILURE   = ${pipeline.buildJobFailure}"
-      echo "    => Number of Test jobs = ${pipeline.testJobNumber}" 
+      echo "    => Number of Test jobs = ${pipeline.testJobNumber}"
       echo "    => Test job SUCCESS    = ${pipeline.testJobSuccess}"
       echo "    => Test job UNSTABLE   = ${pipeline.testJobUnstable}"
       echo "    => Test job FAILURE    = ${pipeline.testJobFailure}"
@@ -212,7 +212,7 @@ node ("master") {
     // Build % success rating: Successes as % of build total
     def buildSuccesses = totalBuildJobs - buildFailures
     def nightlyBuildSuccessRating = 0
-    if (totalBuildJobs > 0) {    
+    if (totalBuildJobs > 0) {
       nightlyBuildSuccessRating = ((buildSuccesses)*100)/(totalBuildJobs)
     } else {
       // If no Builds were run assume 0% success
@@ -224,7 +224,7 @@ node ("master") {
 
     echo "======> Success Rating for variant: ${variant}"
     echo "======> Total number of Build jobs    = ${totalBuildJobs}"
-    echo "======> Total number of Test jobs     = ${totalTestJobs}" 
+    echo "======> Total number of Test jobs     = ${totalTestJobs}"
     echo "======> Nightly Build Success Rating  = ${nightlyBuildSuccessRating.intValue()} %"
     echo "======> Nightly Test Success Rating   = ${nightlyTestSuccessRating.intValue()} %"
     echo "======> Overall Nightly Build & Test Success Rating = ${overallNightlySuccessRating} %"
@@ -259,4 +259,3 @@ node ("master") {
     }
   }
 }
-
